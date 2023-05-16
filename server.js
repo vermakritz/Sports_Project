@@ -3,12 +3,19 @@ const mysql = require('mysql2');
 const app = express();
 const port = 3000;
 
+//to use varibale passed from forms in index.html
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: true}));
+
+// Serve static files from the "public" directory
+app.use(express.static(__dirname));
+
 // MySQL database configuration
 const connection = mysql.createConnection({
-  host: 'your_host',
-  user: 'your_username',
-  password: 'your_password',
-  database: 'your_database'
+  host: 'localhost',
+  user: 'root',
+  password: 'Rishabh@123',
+  database: 'sports'
 });
 
 // Connect to the MySQL database
@@ -20,22 +27,45 @@ connection.connect((err) => {
   }
 });
 
-// Set up the route to handle form submissions
-app.get('/students', (req, res) => {
-  const rollNumber = req.query.rollNumber;
+//root route
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + "/index.html");
+});
 
+// Set up the route to handle form submissions
+app.post('/submit', (req, res) => {
+
+  const rollNumber = req.body.rollNumber;
   // Perform the query
-  connection.query('SELECT * FROM students WHERE rollNumber = ?', [rollNumber], (err, results) => {
+  connection.query(`SELECT student.*,
+    CONCAT_WS(', ',
+            CASE WHEN games.Volleyball = 'Y' THEN 'Volleyball' ELSE NULL END,
+            CASE WHEN games.Football = 'Y' THEN 'Football' ELSE NULL END,
+            CASE WHEN games.cricket = 'Y' THEN 'Cricket' ELSE NULL END,
+            CASE WHEN games.tabletennis = 'Y' THEN 'Table Tennis' ELSE NULL END,
+            CASE WHEN games.badminton = 'Y' THEN 'Badminton' ELSE NULL END,
+            CASE WHEN games.Chess = 'Y' THEN 'Chess' ELSE NULL END
+            
+            ) AS ParticipatedGames
+  FROM student
+  INNER JOIN games ON student.ID = games.s_id
+  WHERE student.ID = ?;`, [rollNumber] ,(err, results) => {
+    // If there is an error in executing query give error
     if (err) {
       console.error('Error executing query:', err);
       res.status(500).send('Error executing query');
     } else {
-      // Process the query results
-      const student = results[0];
-      res.send(student);
+
+      // Else Process the query results
+      const queryResult = JSON.stringify(results);
+
+      // Redirect to the desired route with the response data
+      res.redirect('/details.html?data=' + encodeURIComponent(queryResult));
     }
   });
 });
+
+
 
 // Start the server
 app.listen(port, () => {

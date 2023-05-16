@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Details</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h2>Student Details</h2>
+  <div id="resultContainer"></div>
+
+  <script>
+    // Retrieve the response data from the query parameter in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const responseData = JSON.parse(decodeURIComponent(urlParams.get('data')));
+
+    // Display the response data in a table
+    const resultContainer = document.getElementById('resultContainer');
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+
+    // Create table header row
+    const headerRow = document.createElement('tr');
+    for (const key in responseData[0]) {
+      const th = document.createElement('th');
+      th.textContent = key;
+      headerRow.appendChild(th);
+    }
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Create table body rows
+    responseData.forEach(obj => {
+      const row = document.createElement('tr');
+      for (const key in obj) {
+        const cell = document.createElement('td');
+        cell.textContent = obj[key];
+        row.appendChild(cell);
+      }
+      tbody.appendChild(row);
+    });
+
+    table.appendChild(tbody);
+    resultContainer.appendChild(table);
+  </script>
+</body>
+</html>
