@@ -1551,6 +1551,7 @@ article img.pull-right, article .align-right{
 	.navbar-brand {
 		margin-top: 10px;
 		border-bottom: none;
+		margin-bottom: 30px;
 	}
 	.navbar-header {
 		margin-top: 20px;
