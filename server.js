@@ -65,7 +65,54 @@ app.post('/submit', (req, res) => {
   });
 });
 
+// code to get click from URl and execute 2nd SQL command
+// Handle POST request to /execute-query route
+app.post('/execute-query', (req, res) => {
 
+  const game = req.body.game;
+  // Perform the query
+  let query = "";
+  if(game == 'volleyball'){
+    query = "SELECT student.* FROM student INNER JOIN games ON student.ID = games.S_ID WHERE games.volleyball = 'Y' ;";
+  }
+ 
+  else if(game == 'football'){
+    query = "SELECT student.* FROM student INNER JOIN games ON student.ID = games.S_ID WHERE games.football = 'Y' ;";
+  }
+
+  else if(game == 'cricket'){
+    query = "SELECT student.* FROM student INNER JOIN games ON student.ID = games.S_ID WHERE games.cricket = 'Y' ;";
+  }
+
+  else if(game == 'badminton'){
+    query = "SELECT student.* FROM student INNER JOIN games ON student.ID = games.S_ID WHERE games.badminton = 'Y' ;";
+  }
+
+  else if(game == 'tabletennis'){
+    query = "SELECT student.* FROM student INNER JOIN games ON student.ID = games.S_ID WHERE games.tabletennis = 'Y' ;";
+  }
+
+  else if(game == 'chess'){
+    query = "SELECT student.* FROM student INNER JOIN games ON student.ID = games.S_ID WHERE games.chess = 'Y' ;";
+  }
+
+  //Execute query
+  connection.query(query,(err, results) => {
+    // If there is an error in executing query give error
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).send('Error executing query');
+    } else {
+
+      // Else Process the query results
+      const queryResult = JSON.stringify(results);
+
+      // Redirect to the desired route with the response data
+      res.redirect('/teams.html?data=' + encodeURIComponent(queryResult));
+    }
+});
+
+});
 
 // Start the server
 app.listen(port, () => {

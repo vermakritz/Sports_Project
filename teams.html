@@ -36,8 +36,8 @@
 						<ul class="nav navbar-nav">
 							<li><a href="index.html">Home</a></li>
 							<li><a href="./about.html">About Us</a></li>
-							<li><a href="./sports.html">Sports</a></li>
-							<li class="active"><a href="./students.html">Students</a></li>
+							<li class="active"><a href="./sports.html">Sports</a></li>
+							<li><a href="./students.html">Students</a></li>
 							<li><a href="./contact.html">Contact</a></li>
 						</ul>
 					</div>
@@ -49,7 +49,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-12">
-						<h2 class="pageTitle student_details">View Student Details</h2>
+						<h2 class="pageTitle student_details">Our Teams </h2>
 					</div>
 				</div>
 			</div>
@@ -62,21 +62,51 @@
 					<div class="row">
 						<div class="col-md-12">
 							<div class="about-logo">
-								<h3 style="text-align: center;">Enter roll number of Student</h3>
-							</div>
-							<div class="container">
-								<form id="rollNumberForm" action="/submit" method="post">
-									<div class="form-group">
-										<input type="text" id="rollNumber" name="rollNumber"
-											placeholder="Enter your roll number" required>
-									</div>
-									<div class="center">
-										<button type="submit2">Submit</button>
-									</div>
-								</form>
-								<div id="resultContainer"></div>
-							</div>
-						</div>
+								<h3 style="text-align: center;">Student Details</h3>
+                <div id="resultContainer"></div>
+
+                <script>
+                  // Retrieve the response data from the query parameter in the URL
+                  const urlParams = new URLSearchParams(window.location.search);
+                  const responseData = JSON.parse(decodeURIComponent(urlParams.get('data')));
+                
+                  // Check if the response data is null or empty
+                  if (responseData === null || responseData.length === 0) {
+                    const resultContainer = document.getElementById('resultContainer');
+                    resultContainer.textContent = 'No data found. Please check the roll number you have entered.';
+                  } else {
+                    // Display the response data in a table
+                    const resultContainer = document.getElementById('resultContainer');
+                    const table = document.createElement('table');
+                    const thead = document.createElement('thead');
+                    const tbody = document.createElement('tbody');
+                
+                    // Create table header row
+                    const headerRow = document.createElement('tr');
+                    for (const key in responseData[0]) {
+                      const th = document.createElement('th');
+                      th.textContent = key;
+                      headerRow.appendChild(th);
+                    }
+                    thead.appendChild(headerRow);
+                    table.appendChild(thead);
+                
+                    // Create table body rows
+                    responseData.forEach(obj => {
+                      const row = document.createElement('tr');
+                      for (const key in obj) {
+                        const cell = document.createElement('td');
+                        cell.textContent = obj[key];
+                        row.appendChild(cell);
+                      }
+                      tbody.appendChild(row);
+                    });
+                
+                    table.appendChild(tbody);
+                    resultContainer.appendChild(table);
+                  }
+                </script>
+                
 					</div>
 					<br>
 
@@ -84,12 +114,7 @@
 					<!-- Accordion ends -->
 
 				</div>
-
 				<br>
-				<!-- Our Team starts -->
-				<!-- Our team ends -->
-
-
 			</div>
 
 	</div>
